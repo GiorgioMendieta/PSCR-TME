@@ -39,6 +39,7 @@ namespace pr
 
     void push_back(const std::string &val);
 
+    // FAUTE : Remove redefinition of implementation in List.cpp
     void push_front(const std::string &val);
 
     bool empty();

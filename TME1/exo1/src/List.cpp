@@ -13,10 +13,12 @@ namespace pr
     {
       len += next->length();
     }
+    // FAUTE: Recursion
     return len;
   }
 
-  void Chainon::print(std::ostream &os) const // https://en.cppreference.com/w/cpp/language/member_functions#Member_functions_with_cv-qualifiers
+  // https://en.cppreference.com/w/cpp/language/member_functions#Member_functions_with_cv-qualifiers
+  void Chainon::print(std::ostream &os) const // FAUTE: Missing qualifier
   {
     os << data;
     if (next != nullptr)
@@ -25,7 +27,7 @@ namespace pr
     }
     else
     {
-      // Stop
+      // FAUTE: Condition d'arret
       return;
     }
     next->print(os);
@@ -64,6 +66,7 @@ namespace pr
     tete = new Chainon(val, tete);
   }
 
+  // FAUTE: Missing qualifier name
   bool List::empty()
   {
     return tete == nullptr;
@@ -80,6 +83,8 @@ namespace pr
       return tete->length();
     }
   }
+
+  //} FAUTE: Does not include last function in namespace
 
   std::ostream &operator<<(std::ostream &os, const pr::List &vec)
   {

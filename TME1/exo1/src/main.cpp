@@ -15,7 +15,7 @@ int main()
 
   if (!strcmp(str, abc.c_str()))
   {
-    std::cout << "Equal !";
+    std::cout << "Equal !"; // FAUTE: Remove '.' wrong member declaration
   }
 
   pr::List list;
@@ -37,5 +37,5 @@ int main()
     delete cp;
   }
   // et la chaine elle meme
-  delete[] str;
+  delete[] str; // FAUTE: Add missing [] needed when deleting new [] (https://en.cppreference.com/w/cpp/language/delete)
 }
