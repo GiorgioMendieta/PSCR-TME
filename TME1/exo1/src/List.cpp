@@ -23,6 +23,11 @@ namespace pr
     {
       os << ", ";
     }
+    else
+    {
+      // Stop
+      return;
+    }
     next->print(os);
   }
 
