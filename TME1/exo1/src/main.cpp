@@ -15,7 +15,7 @@ int main()
 
   if (!strcmp(str, abc.c_str()))
   {
-    .std::cout << "Equal !";
+    std::cout << "Equal !";
   }
 
   pr::List list;
