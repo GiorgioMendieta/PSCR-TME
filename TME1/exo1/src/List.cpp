@@ -59,7 +59,7 @@ namespace pr
     tete = new Chainon(val, tete);
   }
 
-  bool empty()
+  bool List::empty()
   {
     return tete == nullptr;
   }
