@@ -76,15 +76,15 @@ namespace pr
     }
   }
 
-} // namespace pr
-
-std::ostream &operator<<(std::ostream &os, const pr::List &vec)
-{
-  os << "[";
-  if (vec.tete != nullptr)
+  std::ostream &operator<<(std::ostream &os, const pr::List &vec)
   {
-    vec.tete->print(os);
+    os << "[";
+    if (vec.tete != nullptr)
+    {
+      vec.tete->print(os);
+    }
+    os << "]";
+    return os;
   }
-  os << "]";
-  return os;
-}
+
+} // namespace pr
