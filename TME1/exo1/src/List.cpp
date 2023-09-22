@@ -13,7 +13,7 @@ namespace pr
     {
       len += next->length();
     }
-    return length();
+    return len;
   }
 
   void Chainon::print(std::ostream &os) const // https://en.cppreference.com/w/cpp/language/member_functions#Member_functions_with_cv-qualifiers
