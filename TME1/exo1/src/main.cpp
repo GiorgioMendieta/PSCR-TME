@@ -37,5 +37,5 @@ int main()
     delete cp;
   }
   // et la chaine elle meme
-  delete str;
+  delete[] str;
 }
