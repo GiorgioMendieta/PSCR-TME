@@ -7,7 +7,7 @@ int main () {
 	using namespace std;
 	using namespace std::chrono;
 
-	ifstream input = ifstream("/tmp/WarAndPeace.txt");
+	ifstream input = ifstream("./WarAndPeace.txt");
 
 	auto start = steady_clock::now();
 	cout << "Parsing War and Peace" << endl;
