@@ -8,3 +8,5 @@ aclocal.m4
 .deps
 autom4te.cache
 *.o
+.project
+main
