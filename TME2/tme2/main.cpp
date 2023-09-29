@@ -3,6 +3,27 @@
 #include <regex>
 #include <chrono>
 
+#include <vector>
+
+// Pass by reference both the unique word list and the current word
+bool is_new_word(std::vector<std::string> &unique_words, const std::string &word)
+{
+  // For each word in unique_words vector, verify if it already exists
+  for (const auto &w : unique_words)
+  {
+    if (w == word)
+    {
+      // Found word !
+      return false;
+    }
+  }
+
+  // Word is new, add it to the list
+  unique_words.push_back(word);
+
+  return true;
+}
+
 int main()
 {
   using namespace std;
@@ -18,17 +39,27 @@ int main()
   string word;
   // une regex qui reconnait les caractères anormaux (négation des lettres)
   regex re(R"([^a-zA-Z])");
+
+  vector<string> unique_words;
+
   while (input >> word)
   {
     // élimine la ponctuation et les caractères spéciaux
     word = regex_replace(word, re, "");
     // passe en lowercase
     transform(word.begin(), word.end(), word.begin(), ::tolower);
-
     // word est maintenant "tout propre"
-    if (nombre_lu % 100 == 0)
-      // on affiche un mot "propre" sur 100
-      cout << nombre_lu << ": " << word << endl;
+
+    // if (nombre_lu % 100 == 0){
+    //   // on affiche un mot "propre" sur 100
+    //   cout << nombre_lu << ": " << word << endl;
+    // }
+
+    if (is_new_word(unique_words, word))
+    {
+      cout << "New word: " << word << endl;
+    }
+
     nombre_lu++;
   }
   input.close();
@@ -41,6 +72,7 @@ int main()
        << "ms.\n";
 
   cout << "Found a total of " << nombre_lu << " words." << endl;
+  cout << "Found a total of " << unique_words.size() << " unique words." << endl;
 
   return 0;
 }
