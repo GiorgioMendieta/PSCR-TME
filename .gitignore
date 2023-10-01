@@ -10,4 +10,4 @@ autom4te.cache
 *.o
 .project
 main
-.vscode/
+.vscode
