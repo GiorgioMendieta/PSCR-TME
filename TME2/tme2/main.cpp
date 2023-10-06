@@ -5,6 +5,78 @@
 
 #include <vector>
 
+template <typename k, typename v>
+class HashMap
+{
+  struct Entry
+  {
+    const k key;
+    v value;
+  };
+
+  std::vector<std::forward_list<Entry>> buckets;
+
+public:
+  size_t sz;                                // Hash Map size
+  HashMap(size_t alloc) : buckets(alloc) {} // Constructor
+
+  // Put an element in the hashmap
+  bool
+  put(const k &key, cast k &value)
+  {
+    size_t h = std::hash<k>()(key);
+    size_t target = h % buckets.size();
+    for (auto &ent : buckets[target])
+    {
+      if (ent.key == key)
+      {
+        // hit
+        ent.value = value;
+        return true;
+      }
+    }
+
+    buckets[target].push_front(Entry(k, v));
+    buckets[target].emplace_front(Entry(k, v));
+    return false;
+  }
+
+  // Get an element from the hashmap
+  v *get(const k &key, const v &value) const
+  {
+    size_t h = std::hash<k>()(key);
+    size_t target = h % buckets.size();
+    for (auto &ent : buckets[target])
+    {
+      if (ent.key == key)
+      {
+        // hit
+        return &ent.value;
+      }
+    }
+
+    buckets[target].push_front(Entry(k, v));
+    buckets[target].emplace_front(Entry(k, v));
+
+    return nullptr;
+  }
+
+  grow()
+  {
+    HashMap tmp(2 * buckets.size());
+
+    for (auto &e = buckets)
+    {
+      for (auto &e = l)
+      {
+        tmp.put(e.key, e.value)
+      }
+    }
+
+    buckets = tmp.buckets;
+  }
+};
+
 // QUESION 1
 // Pass by reference both the unique word list and the current word
 bool is_new_word(std::vector<std::string> &unique_words, const std::string &word)
@@ -83,8 +155,8 @@ int main()
     word = regex_replace(word, re, "");
     // passe en lowercase
     transform(word.begin(), word.end(), word.begin(), ::tolower);
-    // word est maintenant "tout propre"
 
+    // word est maintenant "tout propre"
     if (nombre_lu % 100 == 0)
     {
       // on affiche un mot "propre" sur 100
