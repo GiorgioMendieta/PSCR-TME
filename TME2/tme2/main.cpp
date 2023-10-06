@@ -75,6 +75,33 @@ public:
 
     // buckets = tmp.buckets;
   }
+
+  template <typename T>
+  struct iterator
+  {
+    size_t index;
+    typename std::forward_list<Entry>::iterator it; // Let the compiler know it is a type and not a static member
+    typedef typename buckets_t::iterator buckets_it;
+
+    iterator() {}
+
+    T &operator++()
+    {
+    }
+
+    T &operator*()
+    {
+    }
+
+    // Optional
+    T &operator->()
+    {
+    }
+
+    T &operator!=(const iterator &other)
+    {
+    }
+  };
 };
 
 // QUESION 1
