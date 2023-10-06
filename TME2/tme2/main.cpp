@@ -4,27 +4,30 @@
 #include <chrono>
 
 #include <vector>
+#include <forward_list>
 
-template <typename k, typename v>
+template <typename K, typename V>
 class HashMap
 {
+  // Key, Value pair stored on the hashmap
   struct Entry
   {
-    const k key;
-    v value;
+    const K key;
+    V value;
   };
 
-  std::vector<std::forward_list<Entry>> buckets;
-
-public:
+  // Define a new type for the hashmap buckets
+  typedef std::vector<std::forward_list<Entry>> buckets_t;
+  buckets_t buckets;
   size_t sz;                                // Hash Map size
   HashMap(size_t alloc) : buckets(alloc) {} // Constructor
 
+public:
   // Put an element in the hashmap
   bool
-  put(const k &key, cast k &value)
+  put(const K &key, const V &value)
   {
-    size_t h = std::hash<k>()(key);
+    size_t h = std::hash<K>()(key);
     size_t target = h % buckets.size();
     for (auto &ent : buckets[target])
     {
@@ -35,29 +38,26 @@ public:
         return true;
       }
     }
-
-    buckets[target].push_front(Entry(k, v));
-    buckets[target].emplace_front(Entry(k, v));
+    // TODO: Grow the hashmap if needed
+    buckets[target].emplace_front(key, value);
     return false;
   }
 
   // Get an element from the hashmap
-  v *get(const k &key, const v &value) const
+  V *get(const K &key, const V &value) const
   {
-    size_t h = std::hash<k>()(key);
+    size_t h = std::hash<K>()(key);
     size_t target = h % buckets.size();
     for (auto &ent : buckets[target])
     {
       if (ent.key == key)
       {
-        // hit
+        // Found
         return &ent.value;
       }
     }
 
-    buckets[target].push_front(Entry(k, v));
-    buckets[target].emplace_front(Entry(k, v));
-
+    // Not found
     return nullptr;
   }
 
