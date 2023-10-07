@@ -17,24 +17,27 @@ class HashMap
   };
 
   // Define a new type for the hashmap buckets
-  typedef std::vector<std::forward_list<Entry>> buckets_t;
+  typedef std::vector<std::forward_list<Entry>> buckets_t; // k,v pair of a forward list container, stored in a vector
   buckets_t buckets;
-  size_t sz;                                // Hash Map size
-  HashMap(size_t alloc) : buckets(alloc) {} // Constructor
+  size_t sz; // Hash Map size
 
 public:
-  // Put an element in the hashmap
-  bool
-  put(const K &key, const V &value)
+  HashMap(size_t alloc) : buckets(alloc), sz(0) {} // Constructor with specified size
+  HashMap() : buckets(256), sz(0) {}               // Default constructor
+
+  // Put an element in the hashmap, returns true if the key was already existing
+  bool put(const K &key, const V &value)
   {
     size_t h = std::hash<K>()(key);
     size_t target = h % buckets.size();
-    for (auto &ent : buckets[target])
+
+    // Verify if key already exists and modify the value
+    for (auto &entry : buckets[target])
     {
-      if (ent.key == key)
+      if (entry.key == key)
       {
         // hit
-        ent.value = value;
+        entry.value = value;
         return true;
       }
     }
@@ -43,17 +46,18 @@ public:
     return false;
   }
 
-  // Get an element from the hashmap
-  V *get(const K &key, const V &value) const
+  // Get the value from a key already existing in the hashmap
+  V *get(const K &key)
   {
     size_t h = std::hash<K>()(key);
     size_t target = h % buckets.size();
-    for (auto &ent : buckets[target])
+
+    for (auto &entry : buckets[target])
     {
-      if (ent.key == key)
+      if (entry.key == key)
       {
         // Found
-        return &ent.value;
+        return &entry.value;
       }
     }
 
@@ -61,21 +65,47 @@ public:
     return nullptr;
   }
 
-  void grow()
+  // Increment the value of a key, (true if found key)
+  bool increment(const K &key)
   {
-    // HashMap tmp(2 * buckets.size());
+    size_t h = std::hash<K>()(key);
+    size_t target = h % buckets.size();
+    for (auto &entry : buckets[target])
+    {
+      if (entry.key == key)
+      {
+        // Found
+        entry.value++;
+        return true;
+      }
+    }
 
-    // for (auto &e = buckets)
-    // {
-    //   for (auto &e = l)
-    //   {
-    //     tmp.put(e.key, e.value)
-    //   }
-    // }
-
-    // buckets = tmp.buckets;
+    // Not found
+    return false;
   }
 
+  // Returns the size (number of elements) of the hashmap
+  size_t size() const
+  {
+    return buckets.size();
+  }
+
+  void grow()
+  {
+    // Create a new Hashmap double the previous size
+    HashMap tmp(2 * buckets.size());
+    for (auto &bucket : buckets)
+    {
+      for (auto &element : bucket)
+      {
+        tmp.put(element.key, element.value);
+      }
+    }
+
+    buckets = tmp.buckets;
+  }
+
+  // Non const iterator
   template <typename T>
   struct iterator
   {
@@ -168,6 +198,7 @@ int main()
   cout << "Parsing War and Peace" << endl;
 
   size_t nombre_lu = 0;
+  size_t nombre_lu_hm = 0;
   // prochain mot lu
   string word;
   // une regex qui reconnait les caractères anormaux (négation des lettres)
@@ -175,6 +206,7 @@ int main()
 
   vector<string> unique_words;
   vector<pair<string, uint>> word_occurrence;
+  HashMap<string, uint> word_hm; // Hash Map of word & occurrences
 
   while (input >> word)
   {
@@ -190,10 +222,23 @@ int main()
       cout << nombre_lu << ": " << word << endl;
     }
 
-    is_new_word(unique_words, word);
-    count_word_frequency(word_occurrence, word);
-
+    // is_new_word(unique_words, word);
+    // count_word_frequency(word_occurrence, word);
     nombre_lu++;
+
+    if (!word_hm.get(word))
+    {
+      // Word doesn't exist in the hashmap, put it
+      nombre_lu_hm++;
+      // word_hm.put(word, 1);
+    }
+    // {
+    //   word_hm.increment(word);
+    // }
+    // else
+    // {
+    //   word_hm.put(word, 1);
+    // }
   }
   input.close();
 
@@ -206,12 +251,20 @@ int main()
 
   // QUESTION 1
   cout << "Found a total of " << nombre_lu << " words." << endl;
+  cout << "Found a total of " << nombre_lu_hm << " words." << endl;
   // QUESTION 2
-  cout << "Found a total of " << unique_words.size() << " unique words." << endl;
+  // cout << "Found a total of " << unique_words.size() << " unique words." << endl;
   // QUESTION 3
-  cout << "'war' was found : " << get_word_frequency(word_occurrence, "war") << " times." << endl;
-  cout << "'peace' was found : " << get_word_frequency(word_occurrence, "peace") << " times." << endl;
-  cout << "'toto' was found : " << get_word_frequency(word_occurrence, "toto") << " times." << endl;
+  // cout << "'war' was found : " << get_word_frequency(word_occurrence, "war") << " times." << endl;
+  // cout << "'peace' was found : " << get_word_frequency(word_occurrence, "peace") << " times." << endl;
+  // cout << "'toto' was found : " << get_word_frequency(word_occurrence, "toto") << " times." << endl;
+
+  // QUESTION 6
+  cout << "Found a total of " << word_hm.size() << " unique words." << endl;
+
+  cout << "'war' was found : " << word_hm.get("war") << " times." << endl;
+  cout << "'peace' was found : " << word_hm.get("peace") << " times." << endl;
+  cout << "'toto' was found : " << word_hm.get("toto") << " times." << endl;
 
   return 0;
 }
