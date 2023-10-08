@@ -11,3 +11,5 @@ autom4te.cache
 .project
 main
 .vscode
+output
+*.dSYM/
