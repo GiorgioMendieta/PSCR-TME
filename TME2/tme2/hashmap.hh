@@ -14,6 +14,7 @@ class HashMap
   {
     const K key;
     V value;
+    Entry(const K &key, const V &value) : key(key), value(value) {}
   };
 
   // Define a new type for the hashmap buckets
