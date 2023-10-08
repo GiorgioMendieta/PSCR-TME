@@ -6,6 +6,7 @@
 #include <vector>
 #include <forward_list>
 
+using namespace std;
 template <typename K, typename V>
 class HashMap
 {
@@ -18,7 +19,7 @@ class HashMap
   };
 
   // Define a new type for the hashmap buckets
-  typedef std::vector<std::forward_list<Entry>> buckets_t; // k,v pair of a forward list container, stored in a vector
+  typedef vector<forward_list<Entry>> buckets_t; // k,v pair of a forward list container, stored in a vector
   buckets_t buckets;
   size_t sz; // Hash Map size
 
@@ -29,8 +30,8 @@ public:
   // Put an element in the hashmap, returns true if the key was already existing
   bool put(const K &key, const V &value)
   {
-    size_t h = std::hash<K>()(key);
-    size_t target = h % buckets.size();
+    size_t h = hash<K>()(key);          // Hash the key
+    size_t target = h % buckets.size(); // Store the key in the number of buckets
 
     // Verify if key already exists and modify the value
     for (auto &entry : buckets[target])
@@ -43,14 +44,23 @@ public:
       }
     }
     // TODO: Grow the hashmap if needed
+    if ((float)size() >= (buckets.size() * 0.8))
+    {
+      cout << "nb_buckets: " << buckets.size() << endl;
+      cout << "Hashmap size: " << size() << endl;
+      cout << "Doubling the size of the hashmap..." << endl;
+      grow();
+    }
+
     buckets[target].emplace_front(key, value);
+    sz++;
     return false;
   }
 
   // Get the value from a key already existing in the hashmap
   V *get(const K &key)
   {
-    size_t h = std::hash<K>()(key);
+    size_t h = hash<K>()(key);
     size_t target = h % buckets.size();
 
     for (auto &entry : buckets[target])
@@ -69,7 +79,7 @@ public:
   // Increment the value of a key, (true if found key)
   bool increment(const K &key)
   {
-    size_t h = std::hash<K>()(key);
+    size_t h = hash<K>()(key);
     size_t target = h % buckets.size();
     for (auto &entry : buckets[target])
     {
@@ -85,25 +95,35 @@ public:
     return false;
   }
 
-  // Returns the size (number of elements) of the hashmap
-  size_t size() const
+  // Returns the size (number of buckets) of the hashmap
+  size_t num_buckets() const
   {
     return buckets.size();
+  }
+
+  // Returns the number of non-emtpy elements of the hashmap
+  size_t size() const
+  {
+    return sz;
   }
 
   void grow()
   {
     // Create a new Hashmap double the previous size
     HashMap tmp(2 * buckets.size());
+
+    // For each bucket in the buckets vector
     for (auto &bucket : buckets)
     {
-      for (auto &element : bucket)
+      // For each Entry in the bucket
+      for (auto &ent : bucket)
       {
-        tmp.put(element.key, element.value);
+        tmp.put(ent.key, ent.value);
       }
     }
 
-    buckets = tmp.buckets;
+    // buckets = tmp.buckets;
+    buckets.swap(tmp.buckets);
   }
 
   // Non const iterator
@@ -111,7 +131,7 @@ public:
   struct iterator
   {
     size_t index;
-    typename std::forward_list<Entry>::iterator it; // Let the compiler know it is a type and not a static member
+    typename forward_list<Entry>::iterator it; // Let the compiler know it is a type and not a static member
     typedef typename buckets_t::iterator buckets_it;
 
     iterator() {}
