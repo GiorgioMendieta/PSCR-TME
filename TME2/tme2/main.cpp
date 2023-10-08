@@ -78,7 +78,7 @@ int main()
 
   vector<string> unique_words;
   vector<pair<string, uint>> word_occurrence;
-  HashMap<string, uint> word_hm; // Hash Map of word & occurrences
+  HashMap<string, int> word_hm; // Hash Map of word & occurrences
 
   while (input >> word)
   {
@@ -101,7 +101,11 @@ int main()
     if (!word_hm.get(word))
     {
       // Word doesn't exist in the hashmap, put it
-      // word_hm.put(word, 1);
+      word_hm.put(word, 1);
+    }
+    else
+    {
+      word_hm.increment(word);
     }
   }
   input.close();
@@ -125,10 +129,10 @@ int main()
 
   // QUESTION 6
   cout << "Found a total of " << word_hm.size() << " unique words." << endl;
-
-  cout << "'war' was found : " << word_hm.get("war") << " times." << endl;
-  cout << "'peace' was found : " << word_hm.get("peace") << " times." << endl;
-  cout << "'toto' was found : " << word_hm.get("toto") << " times." << endl;
+  // Attention: dereference pointers to get the proper value
+  cout << "'war' was found : " << *(word_hm.get("war")) << " times." << endl;
+  cout << "'peace' was found : " << *(word_hm.get("peace")) << " times." << endl;
+  // cout << "'toto' was found : " << *(word_hm.get("toto")) << " times." << endl;
 
   return 0;
 }
