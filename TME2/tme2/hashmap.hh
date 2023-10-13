@@ -142,6 +142,7 @@ public:
 
     iterator() {}
 
+    // prefix
     T &operator++()
     {
       ++l_it;
@@ -158,6 +159,14 @@ public:
       }
       return *this;
     }
+
+    // postfix
+    // T &operator++(int /* ignored */)
+    // {
+    //   auto b4 = *this; // Copy
+    //   ++(*this);
+    //   return b4;
+    // }
 
     T &operator*()
     {
