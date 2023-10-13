@@ -28,7 +28,6 @@ void transaction(pr::Banque &b)
 
 int main()
 {
-  cout << "Test";
   pr::Banque b(NB_COMPTES, SOLDEINITIAL); // Instantiate Bank object
   srand(time(nullptr));                   // Seed for the RNG
 
@@ -39,7 +38,8 @@ int main()
   for (size_t i = 0; i < NB_THREAD; i++)
   {
     // Create threads and add them to the threads vector
-    threads.push_back(thread(transaction, ref(b)));
+    // threads.push_back(thread(transaction, ref(b)));
+    threads.emplace_back(transaction, ref(b));
   }
 
   // Join all the threads
