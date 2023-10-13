@@ -16,10 +16,12 @@ namespace pr
       crediteur.crediter(val);
     }
   }
+
   size_t Banque::size() const
   {
     return comptes.size();
   }
+
   bool Banque::comptabiliser(int attendu) const
   {
     int bilan = 0;
