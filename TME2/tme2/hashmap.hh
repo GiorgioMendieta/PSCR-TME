@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <fstream>
 #include <regex>
@@ -131,7 +133,10 @@ public:
   struct iterator
   {
     size_t index;
-    typename forward_list<Entry>::iterator it; // Let the compiler know it is a type and not a static member
+    // typename lets the compiler know it is a type and not a static member
+    typename vector<forward_list<Entry>>::iterator v_it; // Iterator Vector
+    typename forward_list<Entry>::iterator l_it;         // Iterator list
+
     typedef typename buckets_t::iterator buckets_it;
 
     iterator() {}
