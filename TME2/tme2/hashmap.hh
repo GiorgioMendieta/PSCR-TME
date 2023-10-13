@@ -138,15 +138,30 @@ public:
     typename forward_list<Entry>::iterator l_it;         // Iterator list
 
     typedef typename buckets_t::iterator buckets_it;
+    buckets_t &buck;
 
     iterator() {}
 
     T &operator++()
     {
+      ++l_it;
+      if (l_it == buck[index].end())
+      {
+        ++index;
+        for (; index < buck.size() && buck[index].empty(); ++index)
+        {
+          // NOP
+          // Skip empty buckets
+        }
+        if (index < bucket.size())
+          l_it = buck[index].begin();
+      }
+      return *this;
     }
 
     T &operator*()
     {
+      return *l_it;
     }
 
     // Optional
@@ -156,6 +171,31 @@ public:
 
     T &operator!=(const iterator &other)
     {
+      if (index == buck.size() && other.index == index)
+      {
+        return false;
+      }
+      else
+      {
+        return index != other.index || l_it != other.l_it || &buck != &other.buck;
+      }
     }
   };
+
+  iterator begin()
+  {
+    for (int index = 0; index < buckets.size(); index++)
+    {
+      if (!buckets[index].empty())
+      {
+        return iterator(index, buckets[index].begin(), buckets);
+      }
+    }
+    return end();
+  }
+
+  iterator end()
+  {
+    return iterator(bucket.size(), buckets[0].end() /* nullptr */, buckets);
+  }
 };
