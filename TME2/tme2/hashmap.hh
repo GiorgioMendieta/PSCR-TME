@@ -2,8 +2,8 @@
 
 #include <iostream>
 #include <fstream>
-#include <regex>
-#include <chrono>
+// #include <regex>
+// #include <chrono>
 
 #include <vector>
 #include <forward_list>
@@ -23,7 +23,7 @@ class HashMap
   // Define a new type for the hashmap buckets
   typedef vector<forward_list<Entry>> buckets_t; // k,v pair of a forward list container, stored in a vector
   buckets_t buckets;
-  size_t sz; // Hash Map size
+  size_t sz; // Hash Map size (Nb of entries)
 
 public:
   HashMap(size_t alloc) : buckets(alloc), sz(0) {} // Constructor with specified size
@@ -115,12 +115,12 @@ public:
     HashMap tmp(2 * buckets.size());
 
     // For each bucket in the buckets vector
-    for (auto &bucket : buckets)
+    for (auto &list : buckets)
     {
       // For each Entry in the bucket
-      for (auto &ent : bucket)
+      for (auto &entry : list)
       {
-        tmp.put(ent.key, ent.value);
+        tmp.put(entry.key, entry.value);
       }
     }
 
@@ -134,10 +134,10 @@ public:
   {
     size_t index;
     // typename lets the compiler know it is a type and not a static member
-    typename vector<forward_list<Entry>>::iterator v_it; // Iterator Vector
-    typename forward_list<Entry>::iterator l_it;         // Iterator list
 
-    typedef typename buckets_t::iterator buckets_it;
+    // typedef vector<forward_list<Entry>> buckets_t; // k,v pair of a forward list container, stored in a vector
+    typename buckets_t::iterator vit;           // Bucket vector index
+    typename forward_list<Entry>::iterator lit; // index for linked list in bucket
     buckets_t &buck;
 
     iterator() {}
@@ -145,17 +145,23 @@ public:
     // prefix
     T &operator++()
     {
-      ++l_it;
-      if (l_it == buck[index].end())
+      ++lit;
+      // Test to see if we're at the end of the list in the current bucket
+      if (lit == buck[index].end())
       {
-        ++index;
-        for (; index < buck.size() && buck[index].empty(); ++index)
+        // Advance bucket
+        ++vit;
+        for (; vit < buck.size() && buck[index].empty(); ++index)
         {
-          // NOP
           // Skip empty buckets
         }
-        if (index < bucket.size())
-          l_it = buck[index].begin();
+
+        // Check if bucket index is at the end
+        if (vit < buck.size())
+        {
+          // Place list index at the beginning of the bucket
+          lit = buck[index].begin();
+        }
       }
       return *this;
     }
@@ -170,7 +176,8 @@ public:
 
     T &operator*()
     {
-      return *l_it;
+      // Dereference lit (entry list iterator)
+      return *lit;
     }
 
     // Optional
@@ -186,13 +193,14 @@ public:
       }
       else
       {
-        return index != other.index || l_it != other.l_it || &buck != &other.buck;
+        return index != other.index || lit != other.lit || &buck != &other.buck;
       }
     }
   };
 
   iterator begin()
   {
+    // Look for the first non-empty bucket
     for (int index = 0; index < buckets.size(); index++)
     {
       if (!buckets[index].empty())
@@ -204,7 +212,7 @@ public:
   }
 
   iterator end()
-  {
+  { // End of buckets vector, end of first element in buckets vector (nullptr), buckets vector
     return iterator(bucket.size(), buckets[0].end() /* nullptr */, buckets);
   }
 };
