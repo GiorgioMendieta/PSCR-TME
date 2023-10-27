@@ -12,6 +12,6 @@ Le contenu de ce dépot est placé sous licence GPLv3.
 
 ## Information étudiant
 
-**Numéro étudiant :** 21304469
-**Email :** <jorge.mendieta_orozco@etu.sorbonne-universite.fr>
+**Numéro étudiant :** 21304469\
+**Email :** <jorge.mendieta_orozco@etu.sorbonne-universite.fr>\
 **Nom et Prénom :** Jorge Alberto MENDIETA OROZCO
