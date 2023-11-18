@@ -17,7 +17,7 @@ int main(int argc, char **argv)
   // Check for correct usage
   if (argc < 2)
   {
-    perror("Usage: ./mon_program toto");
+    perror("Usage: ./my_pipe argv1 \\| argv2");
     exit(1);
   }
 
