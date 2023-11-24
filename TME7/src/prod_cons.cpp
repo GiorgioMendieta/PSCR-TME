@@ -9,8 +9,6 @@ using namespace pr;
 
 void producteur(Stack<char> *stack)
 {
-	sem_wait(s_prod);
-	sem_wait(mutex);
 	char c;
 	while (cin.get(c))
 	{
