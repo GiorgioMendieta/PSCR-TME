@@ -4,43 +4,52 @@
 #include <sys/wait.h>
 #include <vector>
 
-
 using namespace std;
 using namespace pr;
 
-void producteur (Stack<char> * stack) {
-	char c ;
-	while (cin.get(c)) {
+void producteur(Stack<char> *stack)
+{
+	sem_wait(s_prod);
+	sem_wait(mutex);
+	char c;
+	while (cin.get(c))
+	{
 		stack->push(c);
 	}
 }
 
-void consomateur (Stack<char> * stack) {
-	while (true) {
+void consomateur(Stack<char> *stack)
+{
+	while (true)
+	{
 		char c = stack->pop();
-		cout << c << flush ;
+		cout << c << flush;
 	}
 }
 
-int main () {
-	Stack<char> * s = new Stack<char>();
+int main()
+{
+	Stack<char> *s = new Stack<char>();
 
+	// Producer
 	pid_t pp = fork();
-	if (pp==0) {
+	if (pp == 0)
+	{
 		producteur(s);
 		return 0;
 	}
 
+	// Consumer
 	pid_t pc = fork();
-	if (pc==0) {
+	if (pc == 0)
+	{
 		consomateur(s);
 		return 0;
 	}
 
-	wait(0);
-	wait(0);
+	wait(0); // Producer
+	wait(0); // Consumer
 
 	delete s;
 	return 0;
 }
-
