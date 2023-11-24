@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstring> // size_t,memset
-#include <semaphore>
+#include <semaphore.h>
 
 namespace pr
 {
@@ -23,23 +23,27 @@ namespace pr
 		{
 			memset(tab, 0, sizeof tab);
 
-			mutex = sem_init(&mutex, 1, 1);
-			s_prod = sem_init(&s_prod, 1, 0);
-			s_cons = sem_init(&s_cons, 1, sz);
+			sem_init(&mutex, 1, 1);
+			sem_init(&s_prod, 1, 0);
+			sem_init(&s_cons, 1, sz);
 		}
 
 		~Stack()
 		{
-			sem_destroy(mutex);
-			sem_destroy(s_prod);
-			sem_destroy(s_cons);
+			sem_destroy(&mutex);
+			sem_destroy(&s_prod);
+			sem_destroy(&s_cons);
 		}
 
 		T pop()
 		{
+			sem_wait(&s_prod);
+			sem_wait(&mutex);
 			// bloquer si vide
 			T toret = tab[--sz];
 			return toret;
+			sem_post(&mutex);
+			sem_post(&s_cons);
 		}
 
 		void push(T elt)
