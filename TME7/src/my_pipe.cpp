@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/wait.h> // Wait
 
 // File descriptor table (Father process)
 // [0] Std in
@@ -88,7 +89,9 @@ int main(int argc, char **argv)
     // File_d ancien, File_d nouveau
     close(tube_descriptor[1]);              // Close write end of the pipe
     dup2(tube_descriptor[0], STDIN_FILENO); // stdin replaced by tube_descriptor[0]
+
     // Send the program name and the argument vector
     execv(argv2[0], argv2);
   }
+  wait(0);
 }
